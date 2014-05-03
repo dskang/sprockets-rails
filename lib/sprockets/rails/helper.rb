@@ -42,14 +42,14 @@ module Sprockets
       include ActionView::Helpers::AssetTagHelper
 
       VIEW_ACCESSORS = [:assets_environment, :assets_manifest,
-                        :assets_prefix, :digest_assets, :debug_assets]
+                        :assets_prefix, :debug_assets]
 
       def self.included(klass)
         if klass < Sprockets::Context
           klass.class_eval do
             alias_method :assets_environment, :environment
             def assets_manifest; end
-            class_attribute :config, :assets_prefix, :digest_assets, :debug_assets
+            class_attribute :config, :assets_prefix, :debug_assets
           end
         else
           klass.class_attribute(*VIEW_ACCESSORS)
@@ -67,7 +67,7 @@ module Sprockets
         check_dependencies!(path) if defined?(depend_on)
 
         if digest_path = asset_digest_path(path)
-          path = digest_path if digest_assets
+          path = digest_path
           path += "?body=1" if options[:debug]
           File.join(assets_prefix || "/", path)
         else
@@ -90,10 +90,8 @@ module Sprockets
       # path    - String path
       # options - Hash options
       #
-      # Returns String Hex digest or nil if digests are disabled.
+      # Returns String Hex digest.
       def asset_digest(path, options = {})
-        return unless digest_assets
-
         if digest_path = asset_digest_path(path, options)
           digest_path[/-(.+)\./, 1]
         end

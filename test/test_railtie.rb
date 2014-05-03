@@ -173,14 +173,9 @@ class TestRailtie < TestBoot
     assert app.assets.paths.include?(FIXTURES_PATH)
 
     assert_equal false, ActionView::Base.debug_assets
-    assert_equal false, ActionView::Base.digest_assets
     assert_equal "/assets", ActionView::Base.assets_prefix
     assert_equal app.assets, ActionView::Base.assets_environment
     assert_match %r{public/assets/manifest-.*.json}, ActionView::Base.assets_manifest.path
-
-    @view = ActionView::Base.new
-    assert_equal "/javascripts/xmlhr.js", @view.javascript_path("xmlhr")
-    assert_equal "/assets/foo.js", @view.javascript_path("foo")
   end
 
   def test_sprockets_context_helper
@@ -188,7 +183,6 @@ class TestRailtie < TestBoot
 
     assert env = app.assets
     assert_equal "/assets", env.context_class.assets_prefix
-    assert_equal false, env.context_class.digest_assets
     assert_equal nil, env.context_class.config.asset_host
   end
 

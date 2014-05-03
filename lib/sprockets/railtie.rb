@@ -56,7 +56,6 @@ module Sprockets
     config.assets.version    = ""
     config.assets.debug      = false
     config.assets.compile    = true
-    config.assets.digest     = false
 
     rake_tasks do |app|
       require 'sprockets/rails/task'
@@ -88,13 +87,11 @@ module Sprockets
 
         # Copy relevant config to AV context
         self.debug_assets  = config.assets.debug
-        self.digest_assets = config.assets.digest
         self.assets_prefix = config.assets.prefix
 
         # Copy over to Sprockets as well
         context = app.assets.context_class
         context.assets_prefix = config.assets.prefix
-        context.digest_assets = config.assets.digest
         context.config        = config.action_controller
 
         if config.assets.compile
