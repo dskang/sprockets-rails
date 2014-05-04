@@ -3,7 +3,10 @@ require 'sprockets'
 module Sprockets
   module Rails
     class Environment < Sprockets::Environment
-      # empty for now
+      def call(env)
+        puts 'SRE call!'
+        super(env)
+      end
     end
   end
 end

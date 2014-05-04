@@ -13,15 +13,9 @@ class EnvironmentTest < Minitest::Test
   FIXTURES_PATH = File.expand_path("../fixtures", __FILE__)
 
   def setup
-    app.assets = @assets = Sprockets::Rails::Environment.new
-    @assets.append_path FIXTURES_PATH
-    @assets.context_class.class_eval do
-      include ::Sprockets::Rails::Helper
-    end
-
     @digests = Hash.new
     fixture_files = Dir.entries(FIXTURES_PATH).select { |f| !File.directory? File.join(FIXTURES_PATH, f) }
-    fixture_files.each { |f| @digests[f] = @assets[f].digest }
+    fixture_files.each { |f| @digests[f] = app.assets[f].digest }
   end
 
   def rails_app
@@ -37,6 +31,13 @@ class EnvironmentTest < Minitest::Test
     app.config.secret_key_base = "3b7cd727ee24e8444053437c36cc66c4"
     app.config.eager_load = false
 
+    app.assets = @assets = Sprockets::Rails::Environment.new
+    @assets.append_path FIXTURES_PATH
+    @assets.context_class.class_eval do
+      include ::Sprockets::Rails::Helper
+    end
+
+    ActionView::Base # load ActionView
     app.initialize!
   end
 
@@ -45,7 +46,8 @@ class EnvironmentTest < Minitest::Test
   end
 
   def test_assets_with_digest
-    get "/assets/foo-#{@digests['foo.js']}.js"
+    get "/assets/foo.js"
+    # get "/assets/foo-#{@digests['foo.js']}.js"
     assert_equal 200, last_response.status
   end
 
